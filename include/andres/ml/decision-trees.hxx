@@ -136,7 +136,7 @@ private:
         size_t value;
         s >> value;
 
-        return value;
+        return static_cast< unsigned char >( value );
     }
 
     char read(std::istream& s, char)
