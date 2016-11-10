@@ -1,7 +1,11 @@
 cmake_minimum_required(VERSION 2.6)
-project(ml)
+
+project( RandomForest )
+
 include_directories(include)
-file(GLOB headers include/andres/* include/andres/ml/*)
+
+file(GLOB headers include/andres/*.hxx include/andres/ml/*.hxx)
+
 enable_testing()
 
 ##############################################################################
@@ -9,9 +13,9 @@ enable_testing()
 ##############################################################################
 find_package(Doxygen QUIET)
 if(DOXYGEN_FOUND)
-    message(STATUS "Doxygen found")
+  message(STATUS "Doxygen found")
 else()
-    message("doxygen not found")
+  message("doxygen not found")
 endif()
 
 ##############################################################################
@@ -21,18 +25,19 @@ include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
 CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
 if(COMPILER_SUPPORTS_CXX11)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 elseif(COMPILER_SUPPORTS_CXX0X)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 else()
-    message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Some functionality will not be available.")
+  message(STATUS
+    "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Some functionality will not be available.")
 endif()
 
 ##############################################################################
 # MSVC-specific settings
 ##############################################################################
 if(MSVC)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+  add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
 
 ##############################################################################
@@ -40,20 +45,29 @@ endif()
 ##############################################################################
 find_package(OpenMP)
 if(OPENMP_FOUND)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-    message(STATUS "OpenMP found")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+  message(STATUS "OpenMP found")
 else()
-    message("OpenMP not found")
+  message("OpenMP not found")
 endif()
 
 ##############################################################################
 # targets
 ##############################################################################
-add_executable(test-decision-trees src/unittest/ml/test-decision-trees.cxx ${headers})
-add_test(test-decision-trees test-decision-trees)
+set( EXECUTABLE_OUTPUT_PATH "${RandomForest_BINARY_DIR}/bin" )
+set( LIBRARY_OUTPUT_PATH "${RandomForest_BINARY_DIR}/lib" )
+
+add_executable( test-decision-trees src/unittest/ml/test-decision-trees.cxx
+  ${headers} )
+add_test( test-decision-trees test-decision-trees )
 
 if(DOXYGEN_FOUND)
-    configure_file("${ml_SOURCE_DIR}/doxygen/doxyfile-ml-decision-trees.in" "${ml_BINARY_DIR}/doxyfile-ml-decision-trees" @ONLY IMMEDIATE)
-    add_custom_target(doc-ml-decision-trees ALL COMMAND ${DOXYGEN} "${ml_BINARY_DIR}/doxyfile-ml-decision-trees")
+  configure_file(
+    "${RandomForest_SOURCE_DIR}/doxygen/doxyfile-ml-decision-trees.in"
+    "${RandomForest_BINARY_DIR}/doxyfile-ml-decision-trees" @ONLY IMMEDIATE )
+  add_custom_target(doc-ml-decision-trees ALL COMMAND ${DOXYGEN}
+    "${RandomForest_BINARY_DIR}/doxyfile-ml-decision-trees" )
 endif()
+
+install( FILES ${headers} DESTINATION include )
