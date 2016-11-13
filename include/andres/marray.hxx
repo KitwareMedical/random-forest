@@ -91,6 +91,7 @@
 #include <iostream> // cout
 #include <memory> // allocator
 #include <numeric> // accumulate
+#include <functional> // multiplies
 
 /// The public API.
 namespace andres {
