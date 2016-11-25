@@ -70,4 +70,6 @@ if(DOXYGEN_FOUND)
     "${RandomForest_BINARY_DIR}/doxyfile-ml-decision-trees" )
 endif()
 
-install( FILES ${headers} DESTINATION include )
+install( FILES include/andres/marray.hxx DESTINATION include/andres )
+install( FILES include/andres/ml/decision-trees.hxx DESTINATION
+ include/andres/ml )
